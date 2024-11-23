@@ -7,54 +7,75 @@ root.geometry('800x600+300+50')
 root.resizable(False, False)
 root.configure(background='skyblue')
 
-# 定義切換頁面的函數
-def open_new_window(menu_name):
-    new_window = tk.Toplevel(root)
-    new_window.title(menu_name)
-    new_window.geometry('800x600+300+50')
-    new_window.configure(background='lightgreen')
+#切換頁面的frame
+page_frame = tk.Frame(root, bg="skyblue")
+page_frame.place(relwidth=0.8125, relheight=1, x=150)
 
-    # 在新窗口中顯示菜單
-    label = tk.Label(new_window, text= menu_name, font=("微軟正黑體", 24, "bold"), bg="lightgreen")
-    label.pack(pady=20)
+#主頁面
+def home_page():
+    for i in page_frame.winfo_children():
+        i.destroy()
+    home_page_frame = tk.Frame(page_frame, bg="skyblue")
 
-    # 可以在這裡添加更詳細的菜單內容
-    content = tk.Label(new_window, text= "點擊選項加入你的自訂菜單", font=("微軟正黑體", 14), bg="lightgreen")
-    content.pack(pady=10)
+    title = tk.Label(home_page_frame, text="健身菜單", font=("微軟正黑體", 24, "bold"), bg="lightyellow", fg="black")
+    title.pack(fill=tk.X)
+    label1 = tk.Label(home_page_frame, text="根據你的需求設計一套合適的訓練菜單", font=("微軟正黑體", 14, "bold"), bg="skyblue", fg="black")
+    label1.pack(fill=tk.X)
+    label2 = tk.Label(home_page_frame, text="選擇訓練菜單", font=("微軟正黑體", 14, "bold"), bg="skyblue", fg="black")
+    label2.place(relx=0.4, rely=0.25)
+    star = tk.Button(home_page_frame, text="典藏", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", height=2, width=15)
+    star.place(relx=0.2, rely=0.3)
+    shop = tk.Button(home_page_frame, text="購物車", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", height=2, width=15)
+    shop.place(relx=0.5, rely=0.3)
+    label3 = tk.Label(home_page_frame, text="已選擇XXXX", font=("微軟正黑體", 14, "bold"), bg="skyblue", fg="black")
+    label3.place(relx=0.4, rely=0.5)
+    start = tk.Button(home_page_frame, text="開始訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", height=2, width=15)
+    start.place(relx=0.35, rely=0.7)
 
-# 使用 grid網格 放置按鈕
-frame = tk.Frame(root, bg="skyblue")  # 建立一個框架來放置按鈕
-frame.grid(row=2, column=0, columnspan=2, pady=10)
+    home_page_frame.pack(fill="both", expand=1)
 
-# 設置列的擴展
-root.grid_columnconfigure(0, weight=1)  # 第一列的權重
-root.grid_columnconfigure(1, weight=1)  # 第二列的權重
 
-part1 = tk.Button(frame, text="有氧運動", font=("微軟正黑體", 20, "bold"), bg="white", fg="black", width=15, command=lambda: open_new_window("有氧運動"))
-part2 = tk.Button(frame, text="徒手訓練", font=("微軟正黑體", 20, "bold"), bg="white", fg="black", width=15, command=lambda: open_new_window("徒手訓練"))
-part3 = tk.Button(frame, text="胸部訓練", font=("微軟正黑體", 20, "bold"), bg="white", fg="black", width=15, command=lambda: open_new_window("胸部訓練"))
-part4 = tk.Button(frame, text="肩膀與手臂訓練", font=("微軟正黑體", 20, "bold"), bg="white", fg="black", width=15, command=lambda: open_new_window("肩膀與手臂訓練"))
-part5 = tk.Button(frame, text="背部訓練", font=("微軟正黑體", 20, "bold"), bg="white", fg="black", width=15, command=lambda: open_new_window("背部訓練"))
-part6 = tk.Button(frame, text="腿部訓練", font=("微軟正黑體", 20, "bold"), bg="white", fg="black", width=15, command=lambda: open_new_window("腿部訓練"))
-part7 = tk.Button(frame, text="自訂菜單", font=("微軟正黑體", 20, "bold"), bg="white", fg="black", width=15, command=lambda: open_new_window("自訂菜單"))
-part8 = tk.Button(frame, text="系統推薦菜單", font=("微軟正黑體", 20, "bold"), bg="white", fg="black", width=15, command=lambda: open_new_window("系統推薦菜單"))
+#切換頁面的函式
+def create_page(page_name):
+    for i in page_frame.winfo_children():
+        i.destroy()
+    
+    page_name_frame = tk.Frame(page_frame)
 
-part1.grid(row=0, column=0, padx=5, pady=5)
-part2.grid(row=0, column=1, padx=5, pady=5)
-part3.grid(row=1, column=0, padx=5, pady=5)
-part4.grid(row=1, column=1, padx=5, pady=5)
-part5.grid(row=2, column=0, padx=5, pady=5)
-part6.grid(row=2, column=1, padx=5, pady=5)
-part7.grid(row=3, column=0, padx=5, pady=5)
-part8.grid(row=3, column=1, padx=5, pady=5)
+    lb = tk.Label(page_name_frame, text=page_name, font=("微軟正黑體", 20, "bold"), bg='skyblue', fg="black")
+    lb.pack(fill="both")
 
-# 標題
-title = tk.Label(root, text="健身菜單", font=("微軟正黑體", 24, "bold"), bg="white", fg="black")
-title.grid(row=0, column=0, pady=10, columnspan=2, sticky='nsew')
+    content = tk.Label(page_name_frame, text= "點擊選項加入你的自訂菜單", font=("微軟正黑體", 14), bg='skyblue', fg="black")
+    content.pack(fill="both")
 
-# 說明
-label = tk.Label(root, text="根據你的需求設計一套合適的訓練菜單", font=("微軟正黑體", 14, "bold"), bg="skyblue", fg="black")
-label.grid(row=1, column=0, pady=10, columnspan=2, sticky='nsew')
+    page_name_frame.pack(fill="both")
 
+#選單的frame
+menu = tk.Frame(root)
+menu.pack(side=tk.LEFT, fill=tk.Y)
+menu.pack_propagate(flag=False)
+menu.config(width=150, bg="gray")
+
+home = tk.Button(menu, text="主頁", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: home_page())
+part1 = tk.Button(menu, text="有氧運動", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: create_page("有氧運動"))
+part2 = tk.Button(menu, text="徒手訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: create_page("徒手訓練"))
+part3 = tk.Button(menu, text="胸部訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: create_page("胸部訓練"))
+part4 = tk.Button(menu, text="肩膀與手臂訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: create_page("肩膀與手臂訓練"))
+part5 = tk.Button(menu, text="背部訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: create_page("背部訓練"))
+part6 = tk.Button(menu, text="腿部訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: create_page("腿部訓練"))
+part7 = tk.Button(menu, text="自訂菜單", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: create_page("自訂菜單"))
+part8 = tk.Button(menu, text="系統推薦菜單", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: create_page("系統推薦菜單"))
+
+home.pack()
+part1.pack()
+part2.pack()
+part3.pack()
+part4.pack()
+part5.pack()
+part6.pack()
+part7.pack()
+part8.pack()
+
+home_page()
 # 啟動主迴圈 常駐主視窗
 root.mainloop()
