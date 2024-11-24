@@ -1,6 +1,9 @@
 import os
 import tkinter as tk
 from clock import start_clock_page
+from picture import create_camera_page, cleanup_camera
+import cv2
+from PIL import Image, ImageTk
 
 # 初始化主視窗
 root = tk.Tk()
@@ -9,7 +12,7 @@ root.geometry('800x600+300+50')
 root.resizable(False, False)
 root.configure(background='skyblue')
 
-#切換頁面的frame
+# 切換頁面的frame
 page_frame = tk.Frame(root, bg="skyblue")
 page_frame.place(relwidth=0.8125, relheight=1, x=150)
 
@@ -17,7 +20,7 @@ def switch_to_clock():
     """切換到倒數計時頁面"""
     start_clock_page(page_frame)  # 調用 clock.py 的頁面函式
 
-#主頁面
+# 主頁面
 def home_page():
     for i in page_frame.winfo_children():
         i.destroy()
@@ -45,7 +48,6 @@ def home_page():
     start.place(relx=0.35, rely=0.7)
 
     home_page_frame.pack(fill="both", expand=1)
-
 
 def part1_page():
     part1_page_frame = tk.Frame(page_frame, bg="skyblue")
@@ -95,14 +97,31 @@ def part8_page():
     title.pack(fill=tk.X)
     part8_page_frame.pack(fill="both", expand=1)
 
+def part9_page():
+    """相機頁面"""
+    part9_page_frame = tk.Frame(page_frame, bg="skyblue")
+    title = tk.Label(part9_page_frame, text="拍照機", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+    title.pack(fill=tk.X)
+    
+    # 創建並啟動相機
+    camera_app = create_camera_page(part9_page_frame)
+    
+    # 註冊清理函數
+    def cleanup():
+        cleanup_camera(camera_app)
+        switch_topage(home_page)
+    
+    part9_page_frame.pack(fill="both", expand=1)
 
-#切換頁面的函式
+
+
+# 切換頁面的函式
 def switch_topage(page_name):
     for i in page_frame.winfo_children():
         i.destroy()
     page_name()
 
-#選單的frame
+# 選單的frame
 menu = tk.Frame(root)
 menu.pack(side=tk.LEFT, fill=tk.Y)
 menu.pack_propagate(flag=False)
@@ -117,17 +136,21 @@ part5 = tk.Button(menu, text="背部訓練", font=("微軟正黑體", 15, "bold"
 part6 = tk.Button(menu, text="腿部訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part6_page))
 part7 = tk.Button(menu, text="自訂菜單", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part7_page))
 part8 = tk.Button(menu, text="系統推薦菜單", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part8_page))
+part9 = tk.Button(menu, text="拍照機", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part9_page))
 
-home.pack()
-part1.pack()
-part2.pack()
-part3.pack()
-part4.pack()
-part5.pack()
-part6.pack()
-part7.pack()
-part8.pack()
+home.pack(pady=5)
+part1.pack(pady=5)
+part2.pack(pady=5)
+part3.pack(pady=5)
+part4.pack(pady=5)
+part5.pack(pady=5)
+part6.pack(pady=5)
+part7.pack(pady=5)
+part8.pack(pady=5)
+part9.pack(pady=5)
 
+# 預設顯示主頁
 home_page()
-# 啟動主迴圈 常駐主視窗
+
+# 運行主循環
 root.mainloop()
