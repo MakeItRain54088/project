@@ -12,6 +12,7 @@ def start_clock_page(frame):
     minutes, seconds = 0, 0
     seconds_left = 0
     total_seconds = 0
+    is_paused = False  # 用來追蹤是否暫停
 
     # 繪製時鐘的函式
     def draw_clock():
@@ -30,14 +31,16 @@ def start_clock_page(frame):
     # 倒數計時的函式
     def start_countdown():
         """開始倒數計時"""
-        nonlocal minutes, seconds, seconds_left
-        if seconds_left == 0:
+        nonlocal minutes, seconds, seconds_left, is_paused
+        if is_paused:  # 如果暫停，則不執行倒數
+            return
+        if seconds_left <= 0:  # 如果秒數小於或等於 0，直接返回
             label.config(text="時間到！")
             return
-        # 更新時間
+        # 更新倒數時間
         seconds_left -= 1
         minutes, seconds = divmod(seconds_left, 60)
-        draw_clock()
+        draw_clock()  # 更新時鐘顯示
         # 每秒更新一次
         frame.after(1000, start_countdown)
 
@@ -55,9 +58,21 @@ def start_clock_page(frame):
             minutes, seconds = mins, secs
             seconds_left = minutes * 60 + seconds
             total_seconds = seconds_left
-            draw_clock()
+            draw_clock()  # 初始化時鐘顯示
         except ValueError:
             messagebox.showerror("無效輸入", "請輸入格式為 MM:SS 的時間！")
+
+    # 暫停/繼續的函式
+    def pause_timer():
+        """暫停或繼續倒數"""
+        nonlocal is_paused
+        if is_paused:
+            is_paused = False
+            start_countdown()  # 恢復倒數
+            pause_btn.config(text="暫停")
+        else:
+            is_paused = True
+            pause_btn.config(text="繼續")
 
     # 添加 UI 元件到 frame
     label = tk.Label(frame, text="00:00", font=("Arial", 24), fg="black")
@@ -75,6 +90,10 @@ def start_clock_page(frame):
     # 開始按鈕
     start_btn = tk.Button(frame, text="開始倒數", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black", command=start_countdown)
     start_btn.pack()
+
+    # 暫停/繼續按鈕
+    pause_btn = tk.Button(frame, text="暫停", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black", command=pause_timer)
+    pause_btn.pack()
 
     # 圓形時鐘畫布
     canvas = tk.Canvas(frame, width=300, height=300)
