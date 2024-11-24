@@ -6,10 +6,10 @@ from PIL import Image, ImageTk
 from datetime import datetime  # 用於生成時間戳記
 
 # 定義背景圖片路徑
-background_path = "C:\Users\HSU\OneDrive\桌面\python\project\project\圖片\拍貼機.png"
+background_path = "C:\\Users\\HSU\\OneDrive\\桌面\\python\\project\\project\\圖片\\拍貼機.png"
 
 # 定義儲存圖片的路徑（基礎路徑）
-save_folder = "C:\Users\HSU\OneDrive\桌面\python\project\project\圖片"
+save_folder = "C:\\Users\\HSU\\OneDrive\\桌面\\python\\project\\project\\圖片"
 
 def update_video():
     """更新攝像頭畫面"""

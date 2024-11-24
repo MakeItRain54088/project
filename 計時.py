@@ -70,7 +70,7 @@ root.geometry("800x500")
 root.attributes('-topmost',1)
 #設置背景
 label_bg=tk.Label(root,width=800,height=800)
-original_image1 = Image.open("C:\Users\HSU\OneDrive\桌面\python\project\project\圖片\真正的新背景.png")
+original_image1 = Image.open("C:\\Users\HSU\\OneDrive\\桌面\\python\\project\\project\\圖片\\真正的新背景.png")
 original_image1.thumbnail((800,500))  # 設置圖片大小
 photo1 = ImageTk.PhotoImage(original_image1)
 label_bg.config(image=photo1)
@@ -84,7 +84,7 @@ center_x, center_y = 75, 103
 radius = 20
 # 繪製外圓
 # canvas.create_oval(center_x - radius, center_y - radius, center_x + radius, center_y + radius, outline="black", width=3)
-original_image=Image.open("C:\Users\HSU\OneDrive\桌面\python\project\project\圖片\時鐘.png")
+original_image=Image.open("C:\\Users\\HSU\\OneDrive\\桌面\\python\\project\\project\\圖片\\時鐘.png")
 original_image.thumbnail((150,150))#設置圖片大小
 label1=tk.Label(root)
 photo = ImageTk.PhotoImage(original_image)
