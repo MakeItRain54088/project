@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 from datetime import datetime  # 用於生成時間戳記
 
 # 定義背景圖片路徑
-background_path = "C:\\Users\\HSU\\OneDrive\\桌面\\python\\project\\project\\圖片\\拍貼機.png"
+background_path = "C:\\Users\\HSU\\OneDrive\\桌面\\python\\project\\project\\圖片\\picture.png"
 
 # 定義儲存圖片的路徑（基礎路徑）
 save_folder = "C:\\Users\\HSU\\OneDrive\\桌面\\python\\project\\project\\圖片"
@@ -103,7 +103,7 @@ def on_closing():
 # 初始化 Tkinter 主窗口
 root = tk.Tk()
 root.title("拍貼機")
-root.geometry("800x800")
+root.geometry('800x600+300+50')
 
 # 載入背景圖片
 background_image = Image.open(background_path)

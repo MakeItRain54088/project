@@ -1,4 +1,6 @@
+import os
 import tkinter as tk
+from clock import start_clock_page
 
 # 初始化主視窗
 root = tk.Tk()
@@ -11,7 +13,9 @@ root.configure(background='skyblue')
 page_frame = tk.Frame(root, bg="skyblue")
 page_frame.place(relwidth=0.8125, relheight=1, x=150)
 
-
+def switch_to_clock():
+    """切換到倒數計時頁面"""
+    start_clock_page(page_frame)  # 調用 clock.py 的頁面函式
 
 #主頁面
 def home_page():
@@ -37,21 +41,16 @@ def home_page():
     add_option = tk.Button(home_page_frame, text="新增其他菜單", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", height=1, width=15)
     add_option.place(relx=0.35, rely=0.4)
 
-    start = tk.Button(home_page_frame, text="開始訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", height=2, width=15)
+    start = tk.Button(home_page_frame, text="開始訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", height=2, width=15, command=switch_to_clock)
     start.place(relx=0.35, rely=0.7)
 
     home_page_frame.pack(fill="both", expand=1)
-
 
 
 def part1_page():
     part1_page_frame = tk.Frame(page_frame, bg="skyblue")
     title = tk.Label(part1_page_frame, text="有氧運動", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
-
-    label1 = tk.Label(part1_page_frame, text="part1", font=("微軟正黑體", 15, "bold"), bg="skyblue", fg="black")
-    label1.pack(fill=tk.X)
-    
     part1_page_frame.pack(fill="both", expand=1)
 
 def part2_page():
@@ -95,7 +94,6 @@ def part8_page():
     title = tk.Label(part8_page_frame, text="系統推薦菜單", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
     part8_page_frame.pack(fill="both", expand=1)
-
 
 
 #切換頁面的函式
