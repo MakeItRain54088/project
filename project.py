@@ -1,9 +1,11 @@
 import os
+import csv
+import cv2
+from PIL import Image, ImageTk
+
 import tkinter as tk
 from clock import start_clock_page
 from picture import create_camera_page, cleanup_camera
-import cv2
-from PIL import Image, ImageTk
 
 # 初始化主視窗
 root = tk.Tk()
@@ -50,39 +52,250 @@ def home_page():
     home_page_frame.pack(fill="both", expand=1)
 
 def part1_page():
+    def show_illustration(illustration):
+        for widget in page_frame.winfo_children():
+            widget.destroy()
+
+        illustration_frame = tk.Frame(page_frame, bg="skyblue")
+        title = tk.Label(illustration_frame, text="訓練內容", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+        title.pack(fill=tk.X, pady=10)
+
+        illustration_label = tk.Label(illustration_frame, text=illustration, font=("微軟正黑體", 15), bg="skyblue", fg="black", wraplength=600)
+        illustration_label.pack(pady=20)
+
+        back_button = tk.Button(illustration_frame, text="返回", font=("微軟正黑體", 15, "bold"), bg="white", fg="black",
+                                command=part1_page)  # 返回主頁
+        back_button.pack(pady=10)
+
+        illustration_frame.pack(fill="both", expand=1)
+    
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
+
     part1_page_frame = tk.Frame(page_frame, bg="skyblue")
-    title = tk.Label(part1_page_frame, text="有氧運動", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+    title = tk.Label(part1_page_frame, text="胸部訓練", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
+
+    csv_file = "training_chest.csv"
+    try:
+        with open(csv_file, newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if len(row) != 4:
+                    continue
+                button_name, illustration, website, sec = row
+                button = tk.Button(part1_page_frame, text=button_name, font=("微軟正黑體", 15, "bold"),
+                                   bg="white", fg="black", width=20,
+                                   command=lambda a=illustration: show_illustration(a))
+                button.pack(pady=5)
+    except FileNotFoundError:
+        error_label = tk.Label(part1_page_frame, text="找不到 CSV 檔案", font=("微軟正黑體", 15, "bold"), bg="skyblue", fg="red")
+        error_label.pack(pady=20)
+
     part1_page_frame.pack(fill="both", expand=1)
 
 def part2_page():
+    def show_illustration(illustration):
+        for widget in page_frame.winfo_children():
+            widget.destroy()
+
+        illustration_frame = tk.Frame(page_frame, bg="skyblue")
+        title = tk.Label(illustration_frame, text="訓練內容", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+        title.pack(fill=tk.X, pady=10)
+
+        illustration_label = tk.Label(illustration_frame, text=illustration, font=("微軟正黑體", 15), bg="skyblue", fg="black", wraplength=600)
+        illustration_label.pack(pady=20)
+
+        back_button = tk.Button(illustration_frame, text="返回", font=("微軟正黑體", 15, "bold"), bg="white", fg="black",
+                                command=part1_page)  # 返回主頁
+        back_button.pack(pady=10)
+
+        illustration_frame.pack(fill="both", expand=1)
+    
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
     part2_page_frame = tk.Frame(page_frame, bg="skyblue")
-    title = tk.Label(part2_page_frame, text="徒手訓練", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+    title = tk.Label(part2_page_frame, text="背部訓練", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
+
+    csv_file = "training_back.csv"
+    try:
+        with open(csv_file, newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if len(row) != 4:
+                    continue
+                button_name, illustration, website, sec = row
+                button = tk.Button(part2_page_frame, text=button_name, font=("微軟正黑體", 15, "bold"),
+                                   bg="white", fg="black", width=20,
+                                   command=lambda a=illustration: show_illustration(a))
+                button.pack(pady=5)
+    except FileNotFoundError:
+        error_label = tk.Label(part2_page_frame, text="找不到 CSV 檔案", font=("微軟正黑體", 15, "bold"), bg="skyblue", fg="red")
+        error_label.pack(pady=20)
+
     part2_page_frame.pack(fill="both", expand=1)
 
 def part3_page():
+    def show_illustration(illustration):
+        for widget in page_frame.winfo_children():
+            widget.destroy()
+
+        illustration_frame = tk.Frame(page_frame, bg="skyblue")
+        title = tk.Label(illustration_frame, text="訓練內容", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+        title.pack(fill=tk.X, pady=10)
+
+        illustration_label = tk.Label(illustration_frame, text=illustration, font=("微軟正黑體", 15), bg="skyblue", fg="black", wraplength=600)
+        illustration_label.pack(pady=20)
+
+        back_button = tk.Button(illustration_frame, text="返回", font=("微軟正黑體", 15, "bold"), bg="white", fg="black",
+                                command=part1_page)  # 返回主頁
+        back_button.pack(pady=10)
+
+        illustration_frame.pack(fill="both", expand=1)
+
     part3_page_frame = tk.Frame(page_frame, bg="skyblue")
-    title = tk.Label(part3_page_frame, text="胸部訓練", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+    title = tk.Label(part3_page_frame, text="肩膀訓練", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
+
+    csv_file = "training_shoulder.csv"
+    try:
+        with open(csv_file, newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if len(row) != 4:
+                    continue
+                button_name, illustration, website, sec = row
+                button = tk.Button(part3_page_frame, text=button_name, font=("微軟正黑體", 15, "bold"),
+                                   bg="white", fg="black", width=20,
+                                   command=lambda a=illustration: show_illustration(a))
+                button.pack(pady=5)
+    except FileNotFoundError:
+        error_label = tk.Label(part3_page_frame, text="找不到 CSV 檔案", font=("微軟正黑體", 15, "bold"), bg="skyblue", fg="red")
+        error_label.pack(pady=20)
+
     part3_page_frame.pack(fill="both", expand=1)
 
 def part4_page():
+    def show_illustration(illustration):
+        for widget in page_frame.winfo_children():
+            widget.destroy()
+
+        illustration_frame = tk.Frame(page_frame, bg="skyblue")
+        title = tk.Label(illustration_frame, text="訓練內容", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+        title.pack(fill=tk.X, pady=10)
+
+        illustration_label = tk.Label(illustration_frame, text=illustration, font=("微軟正黑體", 15), bg="skyblue", fg="black", wraplength=600)
+        illustration_label.pack(pady=20)
+
+        back_button = tk.Button(illustration_frame, text="返回", font=("微軟正黑體", 15, "bold"), bg="white", fg="black",
+                                command=part1_page)  # 返回主頁
+        back_button.pack(pady=10)
+
+        illustration_frame.pack(fill="both", expand=1)
+
     part4_page_frame = tk.Frame(page_frame, bg="skyblue")
-    title = tk.Label(part4_page_frame, text="肩膀與手臂訓練", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+    title = tk.Label(part4_page_frame, text="手臂訓練", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
+
+    csv_file = "training_arm.csv"
+    try:
+        with open(csv_file, newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if len(row) != 4:
+                    continue
+                button_name, illustration, website, sec = row
+                button = tk.Button(part4_page_frame, text=button_name, font=("微軟正黑體", 15, "bold"),
+                                   bg="white", fg="black", width=20,
+                                   command=lambda a=illustration: show_illustration(a))
+                button.pack(pady=5)
+    except FileNotFoundError:
+        error_label = tk.Label(part4_page_frame, text="找不到 CSV 檔案", font=("微軟正黑體", 15, "bold"), bg="skyblue", fg="red")
+        error_label.pack(pady=20)
+
     part4_page_frame.pack(fill="both", expand=1)
 
 def part5_page():
+    def show_illustration(illustration):
+        for widget in page_frame.winfo_children():
+            widget.destroy()
+
+        illustration_frame = tk.Frame(page_frame, bg="skyblue")
+        title = tk.Label(illustration_frame, text="訓練內容", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+        title.pack(fill=tk.X, pady=10)
+
+        illustration_label = tk.Label(illustration_frame, text=illustration, font=("微軟正黑體", 15), bg="skyblue", fg="black", wraplength=600)
+        illustration_label.pack(pady=20)
+
+        back_button = tk.Button(illustration_frame, text="返回", font=("微軟正黑體", 15, "bold"), bg="white", fg="black",
+                                command=part5_page)  # 返回主頁
+        back_button.pack(pady=10)
+
+        illustration_frame.pack(fill="both", expand=1)
+
     part5_page_frame = tk.Frame(page_frame, bg="skyblue")
-    title = tk.Label(part5_page_frame, text="背部訓練", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+    title = tk.Label(part5_page_frame, text="腹部訓練", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
+
+    csv_file = "training_belly.csv"
+    try:
+        with open(csv_file, newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if len(row) != 4:
+                    continue
+                button_name, illustration, website, sec = row
+                button = tk.Button(part5_page_frame, text=button_name, font=("微軟正黑體", 15, "bold"),
+                                   bg="white", fg="black", width=20,
+                                   command=lambda a=illustration: show_illustration(a))
+                button.pack(pady=5)
+    except FileNotFoundError:
+        error_label = tk.Label(part5_page_frame, text="找不到 CSV 檔案", font=("微軟正黑體", 15, "bold"), bg="skyblue", fg="red")
+        error_label.pack(pady=20)
+
     part5_page_frame.pack(fill="both", expand=1)
 
 def part6_page():
+    def show_illustration(illustration):
+        for widget in page_frame.winfo_children():
+            widget.destroy()
+
+        illustration_frame = tk.Frame(page_frame, bg="skyblue")
+        title = tk.Label(illustration_frame, text="訓練內容", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
+        title.pack(fill=tk.X, pady=10)
+
+        illustration_label = tk.Label(illustration_frame, text=illustration, font=("微軟正黑體", 15), bg="skyblue", fg="black", wraplength=600)
+        illustration_label.pack(pady=20)
+
+        back_button = tk.Button(illustration_frame, text="返回", font=("微軟正黑體", 15, "bold"), bg="white", fg="black",
+                                command=part6_page)  # 返回主頁
+        back_button.pack(pady=10)
+
+        illustration_frame.pack(fill="both", expand=1)
+
     part6_page_frame = tk.Frame(page_frame, bg="skyblue")
     title = tk.Label(part6_page_frame, text="腿部訓練", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
+
+    csv_file = "training_leg.csv"
+    try:
+        with open(csv_file, newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if len(row) != 4:
+                    continue
+                button_name, illustration, website, sec = row
+                button = tk.Button(part6_page_frame, text=button_name, font=("微軟正黑體", 15, "bold"),
+                                   bg="white", fg="black", width=20,
+                                   command=lambda a=illustration: show_illustration(a))
+                button.pack(pady=5)
+    except FileNotFoundError:
+        error_label = tk.Label(part6_page_frame, text="找不到 CSV 檔案", font=("微軟正黑體", 15, "bold"), bg="skyblue", fg="red")
+        error_label.pack(pady=20)
+
     part6_page_frame.pack(fill="both", expand=1)
 
 def part7_page():
@@ -128,11 +341,11 @@ menu.pack_propagate(flag=False)
 menu.config(width=150, bg="gray")
 
 home = tk.Button(menu, text="主頁", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: home_page())
-part1 = tk.Button(menu, text="有氧運動", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part1_page))
-part2 = tk.Button(menu, text="徒手訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part2_page))
-part3 = tk.Button(menu, text="胸部訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part3_page))
-part4 = tk.Button(menu, text="肩膀與手臂訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part4_page))
-part5 = tk.Button(menu, text="背部訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part5_page))
+part1 = tk.Button(menu, text="胸部訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part1_page))
+part2 = tk.Button(menu, text="背部訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part2_page))
+part3 = tk.Button(menu, text="肩膀訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part3_page))
+part4 = tk.Button(menu, text="手臂訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part4_page))
+part5 = tk.Button(menu, text="腹部訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part5_page))
 part6 = tk.Button(menu, text="腿部訓練", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part6_page))
 part7 = tk.Button(menu, text="自訂菜單", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part7_page))
 part8 = tk.Button(menu, text="系統推薦菜單", font=("微軟正黑體", 15, "bold"), bg="white", fg="black", width=15, command=lambda: switch_topage(part8_page))
