@@ -60,11 +60,11 @@ def switch_topage(page_type):
         create_home_page(page_frame, switch_to_clock)
     elif page_type in PAGE_CONFIG:
         title, csv_file = PAGE_CONFIG[page_type]
-        create_training_page(page_frame, title, csv_file)
+        create_training_page(page_frame, title, csv_file, switch_to_clock)  # 傳入 switch_to_clock 函數
     elif page_type == 'custom':
         create_custom_page(page_frame, "自訂菜單")
     elif page_type == 'recommend':
-        create_recommend_page(page_frame)  # 使用新的推薦頁面函數
+        create_recommend_page(page_frame)
     elif page_type == 'camera':
         handle_camera_page()
 
