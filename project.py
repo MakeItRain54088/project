@@ -4,9 +4,10 @@ from PIL import Image, ImageTk
 from clock import start_clock_page
 from picture import create_camera_page, cleanup_camera
 from pages import (
-    create_training_page, 
-    create_home_page, 
-    create_custom_page, 
+    create_training_page,
+    create_home_page,
+    create_custom_page,
+    create_recommend_page, 
     PAGE_CONFIG
 )
 
@@ -49,11 +50,6 @@ def switch_topage(page_type):
     
     Args:
         page_type: 頁面類型標識符
-            - 'home': 主頁
-            - 'chest', 'back', 'shoulder', 'arm', 'belly', 'leg': 訓練頁面
-            - 'custom': 自訂菜單
-            - 'recommend': 系統推薦菜單
-            - 'camera': 相機頁面
     """
     # 清除當前頁面
     for widget in page_frame.winfo_children():
@@ -68,7 +64,7 @@ def switch_topage(page_type):
     elif page_type == 'custom':
         create_custom_page(page_frame, "自訂菜單")
     elif page_type == 'recommend':
-        create_custom_page(page_frame, "系統推薦菜單")
+        create_recommend_page(page_frame)  # 使用新的推薦頁面函數
     elif page_type == 'camera':
         handle_camera_page()
 

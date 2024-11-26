@@ -1,5 +1,8 @@
 import tkinter as tk
+from tkinter import messagebox, simpledialog
 import csv
+
+custom_menus = []
 
 def create_training_page(page_frame, title_text, csv_filename):
     """
@@ -68,10 +71,10 @@ def create_training_page(page_frame, title_text, csv_filename):
 
     training_page_frame.pack(fill="both", expand=1)
 
-def create_home_page(page_frame, switch_to_clock_callback):
+
     """創建主頁面"""
-    for i in page_frame.winfo_children():
-        i.destroy()
+    for widget in page_frame.winfo_children():
+        widget.destroy()
 
     home_page_frame = tk.Frame(page_frame, bg="skyblue")
 
@@ -91,17 +94,203 @@ def create_home_page(page_frame, switch_to_clock_callback):
                      bg="skyblue", fg="black")
     label2.place(relx=0.4, rely=0.25)
     
-    optionlist = ['A','B','C','D','E']
+    # 使用自定義菜單列表作為選項
     option_value = tk.StringVar()
     option_value.set("請選擇")
-    option = tk.OptionMenu(home_page_frame, option_value, *optionlist)
+    
+    # 如果沒有自定義菜單，顯示禁用狀態的選單
+    if not custom_menus:
+        option = tk.OptionMenu(home_page_frame, option_value, "無可用菜單")
+        option.configure(state="disabled")
+    else:
+        option = tk.OptionMenu(home_page_frame, option_value, *custom_menus)
+    
     option.config(width=24, font=("微軟正黑體", 15, "bold"), 
                  bg="white", fg="black")
     option.place(relx=0.25, rely=0.3)
 
+    def add_menu_and_switch():
+        menu_name = simpledialog.askstring("新增菜單", 
+                                         "請輸入菜單名稱：",
+                                         initialvalue=f"自訂菜單 {len(custom_menus) + 1}")
+        if menu_name and menu_name.strip():
+            menu_name = menu_name.strip()
+            custom_menus.append(menu_name)
+            create_blank_training_page(page_frame, menu_name)
+
     add_option = tk.Button(home_page_frame, text="新增其他菜單", 
                           font=("微軟正黑體", 15, "bold"), 
-                          bg="white", fg="black", height=1, width=15)
+                          bg="white", fg="black", height=1, width=15,
+                          command=add_menu_and_switch)
+    add_option.place(relx=0.35, rely=0.4)
+
+    start = tk.Button(home_page_frame, text="開始訓練", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="white", fg="black", height=2, width=15, 
+                     command=switch_to_clock_callback)
+    start.place(relx=0.35, rely=0.7)
+
+    home_page_frame.pack(fill="both", expand=1)
+    """創建主頁面"""
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
+    home_page_frame = tk.Frame(page_frame, bg="skyblue")
+
+    title = tk.Label(home_page_frame, text="健身菜單", 
+                    font=("微軟正黑體", 22, "bold"), 
+                    bg="lightyellow", fg="black")
+    title.pack(fill=tk.X)
+    
+    label1 = tk.Label(home_page_frame, 
+                     text="根據你的需求設計一套合適的訓練菜單", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="skyblue", fg="black")
+    label1.pack(fill=tk.X)
+    
+    label2 = tk.Label(home_page_frame, text="選擇訓練菜單", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="skyblue", fg="black")
+    label2.place(relx=0.4, rely=0.25)
+    
+    # 使用自定義菜單列表作為選項
+    option_value = tk.StringVar()
+    option_value.set("請選擇")
+    
+    # 如果沒有自定義菜單，顯示禁用狀態的選單
+    if not custom_menus:
+        option = tk.OptionMenu(home_page_frame, option_value, "無可用菜單")
+        option.configure(state="disabled")
+    else:
+        option = tk.OptionMenu(home_page_frame, option_value, *custom_menus)
+    
+    option.config(width=24, font=("微軟正黑體", 15, "bold"), 
+                 bg="white", fg="black")
+    option.place(relx=0.25, rely=0.3)
+
+    def add_menu_and_switch():
+        menu_name = simpledialog.askstring("新增菜單", 
+                                         "請輸入菜單名稱：",
+                                         initialvalue=f"自訂菜單 {len(custom_menus) + 1}")
+        if menu_name and menu_name.strip():
+            menu_name = menu_name.strip()
+            custom_menus.append(menu_name)
+            create_blank_training_page(page_frame, menu_name)
+
+    add_option = tk.Button(home_page_frame, text="新增其他菜單", 
+                          font=("微軟正黑體", 15, "bold"), 
+                          bg="white", fg="black", height=1, width=15,
+                          command=add_menu_and_switch)
+    add_option.place(relx=0.35, rely=0.4)
+
+    start = tk.Button(home_page_frame, text="開始訓練", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="white", fg="black", height=2, width=15, 
+                     command=switch_to_clock_callback)
+    start.place(relx=0.35, rely=0.7)
+
+    home_page_frame.pack(fill="both", expand=1)
+    """創建主頁面"""
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
+    home_page_frame = tk.Frame(page_frame, bg="skyblue")
+
+    title = tk.Label(home_page_frame, text="健身菜單", 
+                    font=("微軟正黑體", 22, "bold"), 
+                    bg="lightyellow", fg="black")
+    title.pack(fill=tk.X)
+    
+    label1 = tk.Label(home_page_frame, 
+                     text="根據你的需求設計一套合適的訓練菜單", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="skyblue", fg="black")
+    label1.pack(fill=tk.X)
+    
+    label2 = tk.Label(home_page_frame, text="選擇訓練菜單", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="skyblue", fg="black")
+    label2.place(relx=0.4, rely=0.25)
+    
+    # 使用自定義菜單列表作為選項
+    option_value = tk.StringVar()
+    option_value.set("請選擇")
+    
+    # 如果沒有自定義菜單，顯示禁用狀態的選單
+    if not custom_menus:
+        option = tk.OptionMenu(home_page_frame, option_value, "無可用菜單")
+        option.configure(state="disabled")
+    else:
+        option = tk.OptionMenu(home_page_frame, option_value, *custom_menus)
+    
+    option.config(width=24, font=("微軟正黑體", 15, "bold"), 
+                 bg="white", fg="black")
+    option.place(relx=0.25, rely=0.3)
+
+    def add_menu_and_switch():
+        menu_name = f"自訂菜單 {len(custom_menus) + 1}"
+        custom_menus.append(menu_name)
+        create_blank_training_page(page_frame, menu_name)
+
+    add_option = tk.Button(home_page_frame, text="新增其他菜單", 
+                          font=("微軟正黑體", 15, "bold"), 
+                          bg="white", fg="black", height=1, width=15,
+                          command=add_menu_and_switch)
+    add_option.place(relx=0.35, rely=0.4)
+
+    start = tk.Button(home_page_frame, text="開始訓練", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="white", fg="black", height=2, width=15, 
+                     command=switch_to_clock_callback)
+    start.place(relx=0.35, rely=0.7)
+
+    home_page_frame.pack(fill="both", expand=1)
+    """創建主頁面"""
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
+    home_page_frame = tk.Frame(page_frame, bg="skyblue")
+
+    title = tk.Label(home_page_frame, text="健身菜單", 
+                    font=("微軟正黑體", 22, "bold"), 
+                    bg="lightyellow", fg="black")
+    title.pack(fill=tk.X)
+    
+    label1 = tk.Label(home_page_frame, 
+                     text="根據你的需求設計一套合適的訓練菜單", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="skyblue", fg="black")
+    label1.pack(fill=tk.X)
+    
+    label2 = tk.Label(home_page_frame, text="選擇訓練菜單", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="skyblue", fg="black")
+    label2.place(relx=0.4, rely=0.25)
+    
+    # 使用自定義菜單列表作為選項
+    option_value = tk.StringVar()
+    option_value.set("請選擇")
+    
+    # 如果沒有自定義菜單，顯示禁用狀態的選單
+    if not custom_menus:
+        option = tk.OptionMenu(home_page_frame, option_value, "無可用菜單")
+        option.configure(state="disabled")
+    else:
+        option = tk.OptionMenu(home_page_frame, option_value, *custom_menus)
+    
+    option.config(width=24, font=("微軟正黑體", 15, "bold"), 
+                 bg="white", fg="black")
+    option.place(relx=0.25, rely=0.3)
+
+    def add_menu_and_switch():
+        menu_name = f"自訂菜單 {len(custom_menus) + 1}"
+        custom_menus.append(menu_name)
+        create_blank_training_page(page_frame, menu_name)
+
+    add_option = tk.Button(home_page_frame, text="新增其他菜單", 
+                          font=("微軟正黑體", 15, "bold"), 
+                          bg="white", fg="black", height=1, width=15,
+                          command=add_menu_and_switch)
     add_option.place(relx=0.35, rely=0.4)
 
     start = tk.Button(home_page_frame, text="開始訓練", 
@@ -112,14 +301,344 @@ def create_home_page(page_frame, switch_to_clock_callback):
 
     home_page_frame.pack(fill="both", expand=1)
 
+    """
+    創建空白的訓練頁面
+    
+    Args:
+        page_frame: 主要的頁面框架
+        menu_name: 菜單名稱
+    """
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
+    blank_page_frame = tk.Frame(page_frame, bg="skyblue")
+    
+    # 創建標題區域框架
+    title_frame = tk.Frame(blank_page_frame, bg="lightyellow")
+    title_frame.pack(fill=tk.X)
+    
+    # 標題和刪除按鈕並排
+    title = tk.Label(title_frame, text=f"{menu_name}", 
+                    font=("微軟正黑體", 22, "bold"), 
+                    bg="lightyellow", fg="black")
+    title.pack(side=tk.LEFT, padx=10)
+    
+    delete_btn = tk.Button(title_frame, text="刪除菜單", 
+                          font=("微軟正黑體", 12), 
+                          bg="red", fg="white",
+                          command=lambda: delete_menu(menu_name, blank_page_frame, page_frame))
+    delete_btn.pack(side=tk.RIGHT, padx=10, pady=5)
+
+    # 這裡可以之後添加更多內容
+    message = tk.Label(blank_page_frame, 
+                      text="此頁面待開發更多功能", 
+                      font=("微軟正黑體", 15), 
+                      bg="skyblue", fg="black")
+    message.pack(pady=20)
+
+    blank_page_frame.pack(fill="both", expand=1)
+
+def edit_menu_name(menu_name, menu_button, page_frame):
+    """
+    編輯菜單名稱
+    
+    Args:
+        menu_name: 當前菜單名稱
+        menu_button: 菜單按鈕
+        page_frame: 主頁面框架
+    """
+    new_name = simpledialog.askstring("編輯菜單名稱", 
+                                    "請輸入新的菜單名稱：",
+                                    initialvalue=menu_name)
+    if new_name and new_name.strip():  # 確保新名稱不為空
+        new_name = new_name.strip()
+        # 更新列表中的菜單名稱
+        index = custom_menus.index(menu_name)
+        custom_menus[index] = new_name
+        # 更新頁面
+        create_custom_page(page_frame, "自訂菜單")
+
+def delete_menu(menu_name, menu_button, page_frame):
+    """刪除指定的菜單"""
+    if messagebox.askyesno("確認刪除", f"確定要刪除 {menu_name} 嗎？"):
+        custom_menus.remove(menu_name)
+        menu_button.destroy()
+        create_custom_page(page_frame, "自訂菜單")
+
+def create_blank_training_page(page_frame, menu_name):
+    """創建空白的訓練頁面"""
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
+    blank_page_frame = tk.Frame(page_frame, bg="skyblue")
+    
+    # 創建標題區域框架
+    title_frame = tk.Frame(blank_page_frame, bg="lightyellow")
+    title_frame.pack(fill=tk.X)
+    
+    # 標題、編輯和刪除按鈕並排
+    title = tk.Label(title_frame, text=menu_name, 
+                    font=("微軟正黑體", 22, "bold"), 
+                    bg="lightyellow", fg="black")
+    title.pack(side=tk.LEFT, padx=10)
+    
+    button_frame = tk.Frame(title_frame, bg="lightyellow")
+    button_frame.pack(side=tk.RIGHT, padx=10)
+    
+    edit_btn = tk.Button(button_frame, text="編輯名稱", 
+                        font=("微軟正黑體", 12), 
+                        bg="#4CAF50", fg="white",
+                        command=lambda: edit_menu_name(menu_name, blank_page_frame, page_frame))
+    edit_btn.pack(side=tk.LEFT, padx=5)
+    
+    delete_btn = tk.Button(button_frame, text="刪除菜單", 
+                          font=("微軟正黑體", 12), 
+                          bg="red", fg="white",
+                          command=lambda: delete_menu(menu_name, blank_page_frame, page_frame))
+    delete_btn.pack(side=tk.LEFT, padx=5)
+
+    message = tk.Label(blank_page_frame, 
+                      text="此頁面待開發更多功能", 
+                      font=("微軟正黑體", 15), 
+                      bg="skyblue", fg="black")
+    message.pack(pady=20)
+
+    blank_page_frame.pack(fill="both", expand=1)
+
+def create_menu_button(parent_frame, menu_name, page_frame):
+    """創建菜單按鈕和控制按鈕"""
+    button_frame = tk.Frame(parent_frame, bg="skyblue")
+    button_frame.pack(fill=tk.X, pady=2)
+    
+    # 菜單按鈕
+    menu_button = tk.Button(button_frame, 
+                           text=menu_name,
+                           font=("微軟正黑體", 15, "bold"),
+                           bg="white", fg="black", 
+                           width=15,
+                           command=lambda: create_blank_training_page(page_frame, menu_name))
+    menu_button.pack(side=tk.LEFT, padx=5)
+    
+    # 編輯按鈕
+    edit_button = tk.Button(button_frame, 
+                           text="✎",
+                           font=("微軟正黑體", 15, "bold"),
+                           bg="#4CAF50", fg="white",
+                           width=2,
+                           command=lambda: edit_menu_name(menu_name, button_frame, page_frame))
+    edit_button.pack(side=tk.LEFT, padx=2)
+    
+    # 刪除按鈕
+    delete_button = tk.Button(button_frame, 
+                             text="×",
+                             font=("微軟正黑體", 15, "bold"),
+                             bg="red", fg="white",
+                             width=2,
+                             command=lambda: delete_menu(menu_name, button_frame, page_frame))
+    delete_button.pack(side=tk.LEFT, padx=2)
+    
+    return button_frame
+
 def create_custom_page(page_frame, title_text):
-    """創建自訂菜單和系統推薦菜單頁面"""
+    """創建自訂菜單頁面"""
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
     custom_page_frame = tk.Frame(page_frame, bg="skyblue")
     title = tk.Label(custom_page_frame, text=title_text, 
                     font=("微軟正黑體", 22, "bold"), 
                     bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
+
+    def add_menu():
+        # 讓用戶輸入新菜單名稱
+        menu_name = simpledialog.askstring("新增菜單", 
+                                         "請輸入菜單名稱：",
+                                         initialvalue=f"自訂菜單 {len(custom_menus) + 1}")
+        if menu_name and menu_name.strip():  # 確保名稱不為空
+            menu_name = menu_name.strip()
+            custom_menus.append(menu_name)
+            create_menu_button(menu_buttons_frame, menu_name, page_frame)
+
+    # 添加新增菜單按鈕
+    add_button = tk.Button(custom_page_frame, 
+                          text="新增菜單",
+                          font=("微軟正黑體", 15, "bold"),
+                          bg="white", fg="black", 
+                          width=20,
+                          command=add_menu)
+    add_button.pack(pady=20)
+
+    # 創建一個框架來容納菜單按鈕
+    menu_buttons_frame = tk.Frame(custom_page_frame, bg="skyblue")
+    menu_buttons_frame.pack(fill="both", expand=1)
+
+    # 顯示現有的自定義菜單
+    for menu_name in custom_menus:
+        create_menu_button(menu_buttons_frame, menu_name, page_frame)
+
     custom_page_frame.pack(fill="both", expand=1)
+    """創建自訂菜單頁面"""
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
+    custom_page_frame = tk.Frame(page_frame, bg="skyblue")
+    title = tk.Label(custom_page_frame, text=title_text, 
+                    font=("微軟正黑體", 22, "bold"), 
+                    bg="lightyellow", fg="black")
+    title.pack(fill=tk.X)
+
+    def add_menu():
+        menu_name = f"自訂菜單 {len(custom_menus) + 1}"
+        custom_menus.append(menu_name)
+        create_menu_button(menu_buttons_frame, menu_name, page_frame)
+
+    # 添加新增菜單按鈕
+    add_button = tk.Button(custom_page_frame, 
+                          text="新增菜單",
+                          font=("微軟正黑體", 15, "bold"),
+                          bg="white", fg="black", 
+                          width=20,
+                          command=add_menu)
+    add_button.pack(pady=20)
+
+    # 創建一個框架來容納菜單按鈕
+    menu_buttons_frame = tk.Frame(custom_page_frame, bg="skyblue")
+    menu_buttons_frame.pack(fill="both", expand=1)
+
+    # 顯示現有的自定義菜單
+    for menu_name in custom_menus:
+        create_menu_button(menu_buttons_frame, menu_name, page_frame)
+
+    custom_page_frame.pack(fill="both", expand=1)
+    """創建自訂菜單頁面"""
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
+    custom_page_frame = tk.Frame(page_frame, bg="skyblue")
+    title = tk.Label(custom_page_frame, text=title_text, 
+                    font=("微軟正黑體", 22, "bold"), 
+                    bg="lightyellow", fg="black")
+    title.pack(fill=tk.X)
+
+    def add_menu():
+        menu_name = f"自訂菜單 {len(custom_menus) + 1}"
+        custom_menus.append(menu_name)
+        
+        # 創建新的菜單按鈕
+        menu_button = tk.Button(menu_buttons_frame, 
+                              text=menu_name,
+                              font=("微軟正黑體", 15, "bold"),
+                              bg="white", fg="black", 
+                              width=20,
+                              command=lambda: create_blank_training_page(page_frame, menu_name))
+        menu_button.pack(pady=5)
+
+    # 添加新增菜單按鈕
+    add_button = tk.Button(custom_page_frame, 
+                          text="新增菜單",
+                          font=("微軟正黑體", 15, "bold"),
+                          bg="white", fg="black", 
+                          width=20,
+                          command=add_menu)
+    add_button.pack(pady=20)
+
+    # 創建一個框架來容納菜單按鈕
+    menu_buttons_frame = tk.Frame(custom_page_frame, bg="skyblue")
+    menu_buttons_frame.pack(fill="both", expand=1)
+
+    # 顯示現有的自定義菜單
+    for menu_name in custom_menus:
+        menu_button = tk.Button(menu_buttons_frame, 
+                              text=menu_name,
+                              font=("微軟正黑體", 15, "bold"),
+                              bg="white", fg="black", 
+                              width=20,
+                              command=lambda m=menu_name: create_blank_training_page(page_frame, m))
+        menu_button.pack(pady=5)
+
+    custom_page_frame.pack(fill="both", expand=1)
+
+def create_home_page(page_frame, switch_to_clock_callback):
+    """創建主頁面"""
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
+    home_page_frame = tk.Frame(page_frame, bg="skyblue")
+
+    title = tk.Label(home_page_frame, text="健身菜單", 
+                    font=("微軟正黑體", 22, "bold"), 
+                    bg="lightyellow", fg="black")
+    title.pack(fill=tk.X)
+    
+    label1 = tk.Label(home_page_frame, 
+                     text="根據你的需求設計一套合適的訓練菜單", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="skyblue", fg="black")
+    label1.pack(fill=tk.X)
+    
+    label2 = tk.Label(home_page_frame, text="選擇訓練菜單", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="skyblue", fg="black")
+    label2.place(relx=0.4, rely=0.25)
+    
+    # 使用自定義菜單列表作為選項
+    option_value = tk.StringVar()
+    option_value.set("請選擇")
+    
+    # 如果沒有自定義菜單，顯示禁用狀態的選單
+    if not custom_menus:
+        option = tk.OptionMenu(home_page_frame, option_value, "無可用菜單")
+        option.configure(state="disabled")
+    else:
+        option = tk.OptionMenu(home_page_frame, option_value, *custom_menus)
+    
+    option.config(width=24, font=("微軟正黑體", 15, "bold"), 
+                 bg="white", fg="black")
+    option.place(relx=0.25, rely=0.3)
+
+    def add_menu_and_switch():
+        menu_name = simpledialog.askstring("新增菜單", 
+                                         "請輸入菜單名稱：",
+                                         initialvalue=f"自訂菜單 {len(custom_menus) + 1}")
+        if menu_name and menu_name.strip():
+            menu_name = menu_name.strip()
+            custom_menus.append(menu_name)
+            create_blank_training_page(page_frame, menu_name)
+
+    add_option = tk.Button(home_page_frame, text="新增其他菜單", 
+                          font=("微軟正黑體", 15, "bold"), 
+                          bg="white", fg="black", height=1, width=15,
+                          command=add_menu_and_switch)
+    add_option.place(relx=0.35, rely=0.4)
+
+    start = tk.Button(home_page_frame, text="開始訓練", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="white", fg="black", height=2, width=15, 
+                     command=switch_to_clock_callback)
+    start.place(relx=0.35, rely=0.7)
+
+    home_page_frame.pack(fill="both", expand=1)
+
+def create_recommend_page(page_frame):
+    """創建系統推薦菜單頁面"""
+    for widget in page_frame.winfo_children():
+        widget.destroy()
+
+    recommend_page_frame = tk.Frame(page_frame, bg="skyblue")
+    title = tk.Label(recommend_page_frame, text="系統推薦菜單", 
+                    font=("微軟正黑體", 22, "bold"), 
+                    bg="lightyellow", fg="black")
+    title.pack(fill=tk.X)
+
+    # 這裡可以添加系統推薦的相關內容
+    message = tk.Label(recommend_page_frame, 
+                      text="系統推薦功能開發中", 
+                      font=("微軟正黑體", 15), 
+                      bg="skyblue", fg="black")
+    message.pack(pady=20)
+
+    recommend_page_frame.pack(fill="both", expand=1)
 
 # 頁面配置字典
 PAGE_CONFIG = {
