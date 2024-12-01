@@ -48,9 +48,14 @@ def create_training_page(page_frame, title_text, csv_filename, switch_to_clock_c
                     bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
 
+    def add_to_menus():
+        #還沒寫
+        print("1")
+
     try:
         with open(csv_filename, newline='', encoding='utf-8') as file:
             reader = csv.reader(file)
+            i = 0
             for row in reader:
                 if len(row) != 4:
                     continue
@@ -62,6 +67,16 @@ def create_training_page(page_frame, title_text, csv_filename, switch_to_clock_c
                                  width=20,
                                  command=lambda a=illustration: show_illustration(a))
                 button.pack(pady=5)
+
+                add_btn = tk.Button(training_page_frame, 
+                                 text="加入",
+                                 font=("微軟正黑體", 15, "bold"),
+                                 bg="white", fg="black", 
+                                 width=5,
+                                 command=lambda :add_to_menus())
+                add_btn.place(relx=0.8, y=48+i*54)
+                i += 1
+
     except FileNotFoundError:
         error_label = tk.Label(training_page_frame, 
                              text="找不到 CSV 檔案", 
@@ -159,7 +174,7 @@ def create_blank_training_page(page_frame, menu_name, switch_to_clock_callback=N
     edit_btn = tk.Button(button_frame, text="編輯名稱", 
                         font=("微軟正黑體", 12), 
                         bg="#4CAF50", fg="white",
-                        command=lambda: edit_menu_name(menu_name, blank_page_frame, page_frame))
+                        command=lambda: edit_menu_name(menu_name, blank_page_frame, page_frame, 1))
     edit_btn.pack(side=tk.LEFT, padx=5)
     
     delete_btn = tk.Button(button_frame, text="刪除菜單", 
@@ -167,6 +182,14 @@ def create_blank_training_page(page_frame, menu_name, switch_to_clock_callback=N
                           bg="red", fg="white",
                           command=lambda: delete_menu(menu_name, blank_page_frame, page_frame))
     delete_btn.pack(side=tk.LEFT, padx=5)
+
+
+    back_btn = tk.Button(button_frame, text="返回", 
+                          font=("微軟正黑體", 12), 
+                          bg="blue", fg="white",
+                          command=lambda: create_custom_page(page_frame, "自訂菜單"))
+    back_btn.pack(side=tk.LEFT, padx=5)
+
 
     message = tk.Label(blank_page_frame, 
                       text="此頁面待開發更多功能", 
@@ -184,7 +207,7 @@ def create_blank_training_page(page_frame, menu_name, switch_to_clock_callback=N
 
     blank_page_frame.pack(fill="both", expand=1)
 
-def edit_menu_name(menu_name, menu_button, page_frame):
+def edit_menu_name(menu_name, menu_button, page_frame, a):
     """編輯菜單名稱"""
     new_name = simpledialog.askstring("編輯菜單名稱", 
                                     "請輸入新的菜單名稱：",
@@ -193,7 +216,11 @@ def edit_menu_name(menu_name, menu_button, page_frame):
         new_name = new_name.strip()
         index = custom_menus.index(menu_name)
         custom_menus[index] = new_name
-        create_custom_page(page_frame, "自訂菜單")
+    
+    #a值為是否已在菜單頁面裡
+    if a==1:
+        create_blank_training_page(page_frame, new_name, switch_to_clock_callback=None)
+    else: create_custom_page(page_frame, "自訂菜單")
 
 def delete_menu(menu_name, menu_button, page_frame):
     """刪除指定的菜單"""
@@ -256,7 +283,7 @@ def create_menu_button(parent_frame, menu_name, page_frame):
                            font=("微軟正黑體", 15, "bold"),
                            bg="#4CAF50", fg="white",
                            width=2,
-                           command=lambda: edit_menu_name(menu_name, button_frame, page_frame))
+                           command=lambda: edit_menu_name(menu_name, button_frame, page_frame, a=0))
     edit_button.pack(side=tk.LEFT, padx=2)
     
     delete_button = tk.Button(button_frame, 
