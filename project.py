@@ -8,7 +8,8 @@ from pages import (
     create_training_page,
     create_home_page,
     create_custom_page,
-    create_recommend_page, 
+    create_recommend_page,
+    create_photo_page, 
     PAGE_CONFIG,
 )
 
@@ -68,6 +69,8 @@ def switch_topage(page_type):
         create_recommend_page(page_frame)
     elif page_type == 'camera':
         handle_camera_page()
+    elif page_type == 'photo':
+        create_photo_page(page_frame)
 
 # 選單的frame
 menu = tk.Frame(root)
@@ -86,7 +89,8 @@ buttons_config = [
     ("腿部訓練", 'leg'),
     ("自訂菜單", 'custom'),
     ("系統推薦菜單", 'recommend'),
-    ("拍照機", 'camera')
+    ("拍照機", 'camera'),
+    ("照片頁", 'photo')
 ]
 
 # 創建所有按鈕

@@ -1,8 +1,11 @@
+import os
 import tkinter as tk
 from tkinter import messagebox, simpledialog
 import webview
 import csv
-from PIL import Image
+from PIL import Image, ImageTk
+from datetime import datetime
+from collections import defaultdict
 
 custom_menus = []
 
@@ -450,6 +453,61 @@ def create_recommend_page(page_frame):
     message.pack(pady=20)
 
     recommend_page_frame.pack(fill="both", expand=1)
+
+def create_photo_page(page_frame):
+    """
+    顯示照片頁面，按月份分類並顯示該資料夾中的照片和拍照日期
+    """
+    # 照片存放資料夾
+    photo_folder = r"C:\Users\HSU\OneDrive\桌面\python\project\project\每日照片"
+    
+    # 確保該資料夾存在
+    if not os.path.exists(photo_folder):
+        print(f"資料夾 {photo_folder} 不存在!")
+        return
+    
+    # 獲取資料夾中所有照片檔案
+    photo_files = [f for f in os.listdir(photo_folder) if f.endswith(('.png', '.jpg', '.jpeg'))]
+    
+    if not photo_files:
+        print("資料夾中沒有照片!")
+        return
+
+    # 按月份分組照片
+    photos_by_month = defaultdict(list)
+    for photo_file in photo_files:
+        photo_path = os.path.join(photo_folder, photo_file)
+        
+        # 取得檔案的修改時間並格式化為日期
+        mod_time = os.path.getmtime(photo_path)
+        month_taken = datetime.fromtimestamp(mod_time).strftime("%Y-%m")  # 格式化為 "YYYY-MM"
+        
+        # 根據月份將照片分組
+        photos_by_month[month_taken].append(photo_path)
+    
+    # 顯示每個月的照片
+    for month, photos in sorted(photos_by_month.items()):  # 按月份排序
+        month_label = tk.Label(page_frame, text=f"{month} 的照片", font=("微軟正黑體", 16, "bold"), bg="lightyellow")
+        month_label.pack(pady=10)
+        
+        # 顯示每張照片
+        for photo_path in photos:
+            img = Image.open(photo_path)
+            img.thumbnail((300, 300))  # 縮小圖片以適應視窗大小
+            img_tk = ImageTk.PhotoImage(img)
+            
+            # 取得檔案的修改時間並格式化為日期
+            mod_time = os.path.getmtime(photo_path)
+            date_taken = datetime.fromtimestamp(mod_time).strftime("%Y-%m-%d %H:%M:%S")
+            
+            # 顯示圖片
+            img_label = tk.Label(page_frame, image=img_tk)
+            img_label.image = img_tk  # 保持對圖片的引用
+            img_label.pack(pady=10)
+            
+            # 顯示拍攝日期
+            date_label = tk.Label(page_frame, text=f"拍照日期: {date_taken}", font=("微軟正黑體", 10))
+            date_label.pack(pady=5)
 
 # 頁面配置字典
 PAGE_CONFIG = {
