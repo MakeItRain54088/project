@@ -1,27 +1,24 @@
-
 import tkinter as tk
 from math import pi, cos, sin
-from tkinter import messagebox
 
-def start_clock_page(frame):
-    """設置倒數計時頁面的功能"""
+def start_stopwatch_page(frame, root):
+    """設置計時碼錶頁面的功能"""
     # 清空 frame
     for widget in frame.winfo_children():
         widget.destroy()
 
     # 初始化參數
     minutes, seconds = 0, 0
-    seconds_left = 0
-    total_seconds = 0
-    is_paused = False  # 用來追蹤是否暫停
+    elapsed_seconds = 0
+    is_running = False  # 用來追蹤碼錶是否正在運行
 
     # 繪製時鐘的函式
     def draw_clock():
         """繪製圓形時鐘並更新時間"""
         canvas.delete("hands")  # 清除舊的指針
-        if total_seconds > 0:
+        if elapsed_seconds > 0:
             # 計算秒針角度並繪製
-            seconds_angle = (seconds_left / total_seconds) * 2 * pi
+            seconds_angle = (elapsed_seconds % 60) / 60 * 2 * pi
             seconds_x = center_x + radius * cos(-pi / 2 + seconds_angle)
             seconds_y = center_y + radius * sin(-pi / 2 + seconds_angle)
             canvas.create_line(center_x, center_y, seconds_x, seconds_y, fill="red", width=3, tags="hands")
@@ -29,76 +26,54 @@ def start_clock_page(frame):
         time_str = f"{minutes:02}:{seconds:02}"
         label.config(text=time_str)
 
-    # 倒數計時的函式
-    def start_countdown():
-        """開始倒數計時"""
-        nonlocal minutes, seconds, seconds_left, is_paused
-        if is_paused:  # 如果暫停，則不執行倒數
-            return
-        if seconds_left <= 0:  # 如果秒數小於或等於 0，直接返回
-            label.config(text="時間到！")
-            return
-        # 更新倒數時間
-        seconds_left -= 1
-        minutes, seconds = divmod(seconds_left, 60)
-        draw_clock()  # 更新時鐘顯示
-        # 每秒更新一次
-        frame.after(1000, start_countdown)
+    # 計時碼錶的函式
+    def update_stopwatch():
+        """更新計時碼錶"""
+        nonlocal minutes, seconds, elapsed_seconds, is_running
+        if is_running:
+            elapsed_seconds += 1
+            minutes, seconds = divmod(elapsed_seconds, 60)
+            draw_clock()  # 更新時鐘顯示
+            # 每秒更新一次
+            root.after(1000, update_stopwatch)  # 使用 root 來設定計時
 
-    # 設置時間的函式
-    def set_timer():
-        """設定倒數計時"""
-        nonlocal minutes, seconds, seconds_left, total_seconds
-        time_input = time_entry.get()
-        try:
-            # 驗證格式 MM:SS
-            mins, secs = map(int, time_input.split(":"))
-            if mins < 0 or secs < 0 or secs >= 60:
-                raise ValueError("請輸入有效的時間！")
-            # 設置時間
-            minutes, seconds = mins, secs
-            seconds_left = minutes * 60 + seconds
-            total_seconds = seconds_left
-            draw_clock()  # 初始化時鐘顯示
-        except ValueError:
-            messagebox.showerror("無效輸入", "請輸入格式為 MM:SS 的時間！")
-
-    # 暫停/繼續的函式
-    def pause_timer():
-        """暫停或繼續倒數"""
-        nonlocal is_paused
-        if is_paused:
-            is_paused = False
-            start_countdown()  # 恢復倒數
-            pause_btn.config(text="暫停")
+    # 開始/暫停碼錶的函式
+    def toggle_stopwatch():
+        """開始或暫停碼錶"""
+        nonlocal is_running
+        if is_running:
+            is_running = False
+            start_pause_btn.config(text="開始")
         else:
-            is_paused = True
-            pause_btn.config(text="繼續")
+            is_running = True
+            start_pause_btn.config(text="暫停")
+            update_stopwatch()  # 開始更新計時
 
-    # 添加 UI 元件到 frame
+    # 重置碼錶的函式
+    def reset_stopwatch():
+        """重置碼錶"""
+        nonlocal minutes, seconds, elapsed_seconds, is_running
+        is_running = False
+        elapsed_seconds = 0
+        minutes, seconds = 0, 0
+        start_pause_btn.config(text="開始")
+        draw_clock()
+
+    # 添加 UI 元件到窗口
     label = tk.Label(frame, text="00:00", font=("Arial", 24), fg="black")
-    label.pack(pady=10)
+    label.pack(pady=20)
 
-    # 時間輸入框
-    time_entry = tk.Entry(frame, font=("Arial", 22), justify="center", width=10)
-    time_entry.pack()
-    time_entry.insert(0, "05:00")  # 預設值
+    # 開始/暫停按鈕
+    start_pause_btn = tk.Button(frame, text="開始", font=("微軟正黑體", 18, "bold"), bg="lightyellow", fg="black", command=toggle_stopwatch)
+    start_pause_btn.pack(pady=10)
 
-    # 設置按鈕
-    set_btn = tk.Button(frame, text="設置時間", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black", command=set_timer)
-    set_btn.pack()
-
-    # 開始按鈕
-    start_btn = tk.Button(frame, text="開始倒數", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black", command=start_countdown)
-    start_btn.pack()
-
-    # 暫停/繼續按鈕
-    pause_btn = tk.Button(frame, text="暫停", font=("微軟正黑體", 22, "bold"), bg="lightyellow", fg="black", command=pause_timer)
-    pause_btn.pack()
+    # 重置按鈕
+    reset_btn = tk.Button(frame, text="重置", font=("微軟正黑體", 18, "bold"), bg="lightyellow", fg="black", command=reset_stopwatch)
+    reset_btn.pack(pady=10)
 
     # 圓形時鐘畫布
     canvas = tk.Canvas(frame, width=300, height=300)
-    canvas.pack(pady=10)
+    canvas.pack(pady=20)
 
     # 時鐘基本參數
     center_x, center_y, radius = 150, 150, 125

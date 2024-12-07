@@ -1,14 +1,15 @@
 import os
 import tkinter as tk
+import webview
 from PIL import Image, ImageTk
-from clock import start_clock_page
+from clock import start_stopwatch_page
 from picture import create_camera_page, cleanup_camera
 from pages import (
     create_training_page,
     create_home_page,
     create_custom_page,
     create_recommend_page, 
-    PAGE_CONFIG
+    PAGE_CONFIG,
 )
 
 # 初始化主視窗
@@ -24,7 +25,7 @@ page_frame.place(relwidth=0.8125, relheight=1, x=150)
 
 def switch_to_clock():
     """切換到倒數計時頁面"""
-    start_clock_page(page_frame)
+    start_stopwatch_page(page_frame, root)
 
 def handle_camera_page():
     """處理相機頁面"""
@@ -60,7 +61,7 @@ def switch_topage(page_type):
         create_home_page(page_frame, switch_to_clock)
     elif page_type in PAGE_CONFIG:
         title, csv_file = PAGE_CONFIG[page_type]
-        create_training_page(page_frame, title, csv_file, switch_to_clock)  # 傳入 switch_to_clock 函數
+        create_training_page(page_frame, title, csv_file, switch_to_clock)
     elif page_type == 'custom':
         create_custom_page(page_frame, "自訂菜單")
     elif page_type == 'recommend':
