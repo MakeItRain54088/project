@@ -59,7 +59,7 @@ def switch_topage(page_type):
 
     # 根據頁面類型切換到相應頁面
     if page_type == 'home':
-        create_home_page(page_frame, switch_to_clock)
+        create_home_page(page_frame, root, switch_to_clock)
     elif page_type in PAGE_CONFIG:
         title, csv_file = PAGE_CONFIG[page_type]
         create_training_page(page_frame, title, csv_file, switch_to_clock)

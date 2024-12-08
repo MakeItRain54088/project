@@ -6,11 +6,8 @@ import csv
 from PIL import Image, ImageTk
 from datetime import datetime
 from collections import defaultdict
-
-custom_menus = []
-
-# str 菜單名稱 -> list 內容
-custom_menus_contents = dict()
+from clock import start_stopwatch_page
+from shared import custom_menus, custom_menus_contents
 
 def create_training_page(page_frame, title_text, csv_filename, switch_to_clock_callback=None):
     """
@@ -22,7 +19,45 @@ def create_training_page(page_frame, title_text, csv_filename, switch_to_clock_c
         csv_filename: 訓練數據的CSV檔案名稱
         switch_to_clock_callback: 切換到計時器頁面的回調函數
     """
-    def show_illustration(illustration):
+    def convert_time_to_seconds(time_str):
+        """將時間格式 'mm:ss' 或 'hh:mm:ss' 轉換為秒數"""
+        time_parts = list(map(int, time_str.split(':')))
+        if len(time_parts) == 2:  # mm:ss
+            minutes, seconds = time_parts
+            return minutes * 60 + seconds
+        elif len(time_parts) == 3:  # hh:mm:ss
+            hours, minutes, seconds = time_parts
+            return hours * 3600 + minutes * 60 + seconds
+        return 0
+
+    def embed_video(website, sec):
+        if "youtube" in website:
+            yt, video_id = website.split('/watch?v=')
+            start_time, end_time = sec.split('-')
+            start_time = convert_time_to_seconds(start_time)
+            end_time = convert_time_to_seconds(end_time)
+
+            # 嵌入式 YouTube 網址
+            video_url = f"{yt}/embed/{video_id}?start={start_time}&end={end_time}&autoplay=1"
+
+            # 創建 WebView 視窗
+            webview.create_window("YouTube Player", video_url, width=400, height=300)
+
+            # 啟動 WebView 應用
+            webview.start()
+        else:
+            img = Image.open('image_path.jpg')
+            img.show()
+
+    def show_illustration(illustration, website=None, sec=None):
+        """
+        顯示訓練內容說明頁面，包含文字說明和影片播放功能
+        
+        Args:
+            illustration: 說明文字
+            website: 影片網址或圖片路徑
+            sec: 影片播放時間區間 (格式: "開始時間-結束時間")
+        """
         for widget in page_frame.winfo_children():
             widget.destroy()
 
@@ -36,6 +71,14 @@ def create_training_page(page_frame, title_text, csv_filename, switch_to_clock_c
                                     fg="black", wraplength=600)
         illustration_label.pack(pady=20)
 
+        # 如果有提供影片網址，加入播放按鈕
+        if website and sec:
+            play_button = tk.Button(illustration_frame, text="播放示範影片", 
+                                  font=("微軟正黑體", 15, "bold"), 
+                                  bg="white", fg="black",
+                                  command=lambda: embed_video(website, sec))
+            play_button.pack(pady=10)
+
         def return_to_page():
             create_training_page(page_frame, title_text, csv_filename, switch_to_clock_callback)
 
@@ -47,46 +90,18 @@ def create_training_page(page_frame, title_text, csv_filename, switch_to_clock_c
 
         illustration_frame.pack(fill="both", expand=1)
 
+    # 清除現有的元件
     for widget in page_frame.winfo_children():
         widget.destroy()
 
+    # 創建主要訓練頁面框架
     training_page_frame = tk.Frame(page_frame, bg="skyblue")
     title = tk.Label(training_page_frame, text=title_text, 
                     font=("微軟正黑體", 22, "bold"), 
                     bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
 
-    def embed_video(website, sec):
-        if "youtube" in website:
-            yt, video_id = website.split('/watch?v=')
-            video_url = f"{yt}/embed/{video_id}?start={start_time}&end={end_time}&autoplay=1"
-            start_time, end_time=sec.split('-')
-            start_time=convert_time_to_seconds(start_time)
-            end_time=convert_time_to_seconds(end_time)
-
-            # 嵌入式 YouTube 網址
-            video_url = f"{yt}/embed/{video_id}?start={start_time}&end={end_time}&autoplay=1"
-
-            # 創建 WebView 視窗
-            webview.create_window("YouTube Player", video_url, width=400, height=300)
-
-            # 啟動 WebView 應用
-            webview.start()
-        else:
-            img = Image.open('image_path.jpg')
-            img.show()
-        
-        def convert_time_to_seconds(time_str):
-            """將時間格式 'mm:ss' 或 'hh:mm:ss' 轉換為秒數"""
-            time_parts = list(map(int, time_str.split(':')))
-            if len(time_parts) == 2:  # mm:ss
-                minutes, seconds = time_parts
-                return minutes * 60 + seconds
-            elif len(time_parts) == 3:  # hh:mm:ss
-                hours, minutes, seconds = time_parts
-                return hours * 3600 + minutes * 60 + seconds
-            return 0
-
+    # 選擇菜單部分
     label = tk.Label(training_page_frame, 
                      text="選擇要更動的菜單", 
                      font=("微軟正黑體", 15, "bold"), 
@@ -104,54 +119,52 @@ def create_training_page(page_frame, title_text, csv_filename, switch_to_clock_c
         choose_menus_option = tk.OptionMenu(training_page_frame, choose_menus, *custom_menus)
 
     choose_menus_option.config(width=10, font=("微軟正黑體", 15, "bold"), 
-                               bg="white", fg="black")
+                              bg="white", fg="black")
     choose_menus_option.place(relx=0.02, rely=0.4)
 
-    def add_to_menus(name,choose_menus):
-        if choose_menus.get()!="請選擇" and choose_menus.get()!="無可用菜單":
+    def add_to_menus(name, choose_menus):
+        if choose_menus.get() != "請選擇" and choose_menus.get() != "無可用菜單":
             if name not in custom_menus_contents[choose_menus.get()]:
                 custom_menus_contents[choose_menus.get()].append(name)
             else:
-                custom_menus_contents[choose_menus.get()].pop(custom_menus_contents[choose_menus.get()].index(name))
-            place_add_del_btn(tem,choose_menus)
+                custom_menus_contents[choose_menus.get()].pop(
+                    custom_menus_contents[choose_menus.get()].index(name))
+            place_add_del_btn(tem, choose_menus)
             print(custom_menus_contents)
-    
-    def place_add_del_btn(tem,choose_menus):
-        for i in range(len(tem)):
 
+    def place_add_del_btn(tem, choose_menus):
+        for i in range(len(tem)):
             name = tem[i]
-        
-            if choose_menus.get()=="請選擇" or choose_menus.get()=="無可用菜單":
+            
+            if choose_menus.get() == "請選擇" or choose_menus.get() == "無可用菜單":
                 add_btn = tk.Button(training_page_frame, 
-                             text="加入",
-                             font=("微軟正黑體", 15, "bold"),
-                             bg="white", fg="black", 
-                             width=5,
-                             command=lambda a=name:add_to_menus(a,choose_menus))
+                                  text="加入",
+                                  font=("微軟正黑體", 15, "bold"),
+                                  bg="white", fg="black", 
+                                  width=5,
+                                  command=lambda a=name: add_to_menus(a, choose_menus))
                 add_btn.place(relx=0.8, y=48+i*54)
             else:
                 if name not in custom_menus_contents[choose_menus.get()]:
                     add_btn = tk.Button(training_page_frame, 
-                             text="加入",
-                             font=("微軟正黑體", 15, "bold"),
-                             bg="white", fg="black", 
-                             width=5,
-                             command=lambda a=name:add_to_menus(a,choose_menus))
-                    add_btn.place(relx=0.8, y=48+i*54)
+                                      text="加入",
+                                      font=("微軟正黑體", 15, "bold"),
+                                      bg="white", fg="black", 
+                                      width=5,
+                                      command=lambda a=name: add_to_menus(a, choose_menus))
                 else:
                     add_btn = tk.Button(training_page_frame, 
-                             text="刪除",
-                             font=("微軟正黑體", 15, "bold"),
-                             bg="white", fg="black", 
-                             width=5,
-                             command=lambda a=name:add_to_menus(a,choose_menus))
+                                      text="刪除",
+                                      font=("微軟正黑體", 15, "bold"),
+                                      bg="white", fg="black", 
+                                      width=5,
+                                      command=lambda a=name: add_to_menus(a, choose_menus))
                 add_btn.place(relx=0.8, y=48+i*54)
 
-
+    # 讀取CSV檔案並創建按鈕
     try:
         with open(csv_filename, newline='', encoding='utf-8') as file:
             reader = csv.reader(file)
-            
             tem = []
 
             for row in reader:
@@ -163,12 +176,12 @@ def create_training_page(page_frame, title_text, csv_filename, switch_to_clock_c
                                  font=("微軟正黑體", 15, "bold"),
                                  bg="white", fg="black", 
                                  width=20,
-                                 command=lambda a=illustration: show_illustration(a))
+                                 command=lambda a=illustration, w=website, s=sec: 
+                                     show_illustration(a, w, s))
                 button.pack(pady=5)
-
                 tem.append(button_name)
 
-            place_add_del_btn(tem,choose_menus)
+            place_add_del_btn(tem, choose_menus)
 
     except FileNotFoundError:
         error_label = tk.Label(training_page_frame, 
@@ -178,10 +191,11 @@ def create_training_page(page_frame, title_text, csv_filename, switch_to_clock_c
         error_label.pack(pady=20)
 
     def callback(*arg):
-        place_add_del_btn(tem,choose_menus)
+        place_add_del_btn(tem, choose_menus)
 
-    choose_menus.trace("w",callback)
+    choose_menus.trace("w", callback)
 
+    # 添加開始訓練按鈕
     if switch_to_clock_callback:
         start_button = tk.Button(training_page_frame, 
                                text="開始訓練", 
@@ -191,8 +205,8 @@ def create_training_page(page_frame, title_text, csv_filename, switch_to_clock_c
         start_button.pack(pady=20)
 
     training_page_frame.pack(fill="both", expand=1)
-
-def create_home_page(page_frame, switch_to_clock_callback):
+    
+def create_home_page(page_frame, root, switch_to_clock_callback):
     """創建主頁面"""
     for widget in page_frame.winfo_children():
         widget.destroy()
@@ -215,12 +229,6 @@ def create_home_page(page_frame, switch_to_clock_callback):
                      bg="skyblue", fg="black")
     label2.place(relx=0.4, rely=0.25)
     
-    start = tk.Button(home_page_frame, text="開始訓練", 
-                     font=("微軟正黑體", 15, "bold"), 
-                     bg="white", fg="black", height=2, width=15, 
-                     command=switch_to_clock_callback)
-    start.place(relx=0.35, rely=0.7)
-    
     option_value = tk.StringVar()
     option_value.set("請選擇")
     
@@ -233,6 +241,21 @@ def create_home_page(page_frame, switch_to_clock_callback):
     option.config(width=24, font=("微軟正黑體", 15, "bold"), 
                  bg="white", fg="black")
     option.place(relx=0.25, rely=0.3)
+
+    def start_training():
+        selected_menu = option_value.get()
+        if selected_menu and selected_menu != "請選擇" and selected_menu != "無可用菜單":
+            # 修改回調函數以傳遞所選菜單
+            if switch_to_clock_callback:
+                start_stopwatch_page(page_frame, root, selected_menu)
+        else:
+            messagebox.showwarning("警告", "請先選擇訓練菜單")
+    
+    start = tk.Button(home_page_frame, text="開始訓練", 
+                     font=("微軟正黑體", 15, "bold"), 
+                     bg="white", fg="black", height=2, width=15, 
+                     command=start_training)
+    start.place(relx=0.35, rely=0.7)
 
     def add_menu_and_switch():
         menu_name = simpledialog.askstring("新增菜單", 
