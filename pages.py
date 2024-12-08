@@ -458,6 +458,11 @@ def create_menu_button(parent_frame, menu_name, page_frame):
     
     return button_frame
 
+import tkinter as tk
+from tkinter import simpledialog, messagebox
+import csv
+import random
+
 def create_recommend_page(page_frame):
     """創建系統推薦菜單頁面"""
     for widget in page_frame.winfo_children():
@@ -469,13 +474,110 @@ def create_recommend_page(page_frame):
                     bg="lightyellow", fg="black")
     title.pack(fill=tk.X)
 
-    message = tk.Label(recommend_page_frame, 
-                      text="系統推薦功能開發中", 
-                      font=("微軟正黑體", 15), 
-                      bg="skyblue", fg="black")
-    message.pack(pady=20)
+    def read_exercises_from_csv(csv_filename):
+        """從CSV檔案讀取訓練動作"""
+        exercises = []
+        try:
+            with open(csv_filename, newline='', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    if len(row) >= 1:
+                        exercises.append(row[0])  # 只取動作名稱
+        except FileNotFoundError:
+            print(f"找不到檔案: {csv_filename}")
+        return exercises
+
+    def generate_random_menu():
+        """生成隨機訓練菜單"""
+        all_exercises = {}
+        for key, (name, csv_file) in PAGE_CONFIG.items():
+            exercises = read_exercises_from_csv(csv_file)
+            if exercises:
+                num_exercises = random.randint(1, 2)  # 每個部位隨機1-2個動作
+                selected = random.sample(exercises, min(num_exercises, len(exercises)))
+                all_exercises[name] = selected
+
+        return all_exercises
+
+    def display_menu(exercises_dict):
+        """顯示生成的菜單"""
+        # 清除之前的內容
+        for widget in menu_frame.winfo_children():
+            widget.destroy()
+
+        row = 0  # 控制行數
+        col = 0  # 控制列數
+
+        for part, exercises in exercises_dict.items():
+            # 顯示部位標題
+            part_label = tk.Label(menu_frame, 
+                                text=part,
+                                font=("微軟正黑體", 15, "bold"),
+                                bg="skyblue", fg="black", width=20, anchor="center")
+            part_label.grid(row=row, column=col, pady=(10, 5), padx=10, sticky="n")
+            row += 1
+
+            # 顯示該部位的動作，分兩排排列
+            for idx, exercise in enumerate(exercises):
+                # 每行顯示兩個動作
+                row_in_grid = row + (idx // 2)  # 當 idx 是偶數，放在同一排，否則放在下一排
+                col_in_grid = idx % 2  # 列數，每排最多顯示兩個動作
+                exercise_label = tk.Label(menu_frame,
+                                        text=exercise,
+                                        font=("微軟正黑體", 12),
+                                        bg="white", fg="black", width=15, anchor="center", relief="solid", bd=1)
+                exercise_label.grid(row=row_in_grid, column=col_in_grid, pady=5, padx=10, sticky="nsew")
+            
+            row += (len(exercises) // 2 + 1)  # 每兩個動作一排，換行
+
+    def save_to_custom_menu():
+        """將當前推薦菜單保存為自訂菜單"""
+        menu_name = simpledialog.askstring("儲存菜單",
+                                         "請輸入菜單名稱：",
+                                         initialvalue=f"推薦菜單 {len(custom_menus) + 1}")
+        
+        if menu_name and menu_name.strip():
+            menu_name = menu_name.strip()
+            custom_menus.append(menu_name)
+            custom_menus_contents[menu_name] = []
+            
+            # 將所有顯示的動作加入自訂菜單
+            for part, exercises in current_menu.items():
+                for exercise in exercises:
+                    custom_menus_contents[menu_name].append(exercise)
+            
+            messagebox.showinfo("成功", "菜單已儲存！")
+
+    # 創建按鈕框架
+    button_frame = tk.Frame(recommend_page_frame, bg="skyblue")
+    button_frame.pack(pady=10)
+
+    # 重新生成按鈕
+    regenerate_btn = tk.Button(button_frame,
+                              text="重新生成",
+                              font=("微軟正黑體", 15, "bold"),
+                              bg="white", fg="black",
+                              command=lambda: display_menu(generate_random_menu()))
+    regenerate_btn.pack(side=tk.LEFT, padx=10)
+
+    # 儲存按鈕
+    save_btn = tk.Button(button_frame,
+                        text="儲存為自訂菜單",
+                        font=("微軟正黑體", 15, "bold"),
+                        bg="white", fg="black",
+                        command=save_to_custom_menu)
+    save_btn.pack(side=tk.LEFT, padx=10)
+
+    # 創建顯示菜單的框架
+    menu_frame = tk.Frame(recommend_page_frame, bg="skyblue")
+    menu_frame.pack(fill="both", expand=True)
+
+    # 生成並顯示初始菜單
+    current_menu = generate_random_menu()
+    display_menu(current_menu)
 
     recommend_page_frame.pack(fill="both", expand=1)
+
 
 def create_photo_page(page_frame):
     """
