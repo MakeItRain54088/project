@@ -584,7 +584,7 @@ def create_photo_page(page_frame):
     顯示照片頁面，按月份分類並顯示該資料夾中的照片和拍照日期
     """
     # 照片存放資料夾
-    photo_folder = r"每日照片"
+    photo_folder = r"images"
     
     # 確保該資料夾存在
     if not os.path.exists(photo_folder):

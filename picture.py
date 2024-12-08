@@ -14,7 +14,7 @@ class CameraApp:
         self.is_running = False
         
         # 設定保存路徑
-        self.save_folder = "每日照片"
+        self.save_folder = "images"
         if not os.path.exists(self.save_folder):
             os.makedirs(self.save_folder)
             
